@@ -1,0 +1,342 @@
+﻿Oggetto,Corpo del testo,Allegato,Autore,Creazione:,Aggiornamento:
+Task 7 ,"set :count, 0
+
+
+live_loop :a do
+  swap = 0
+  use_bpm 100
+  use_synth :pulse
+  use_synth_defaults release: 0.2, mod_rate: 5, amp: 0.6
+  if (get[:count] &gt;= 9)
+    sync :master
+  end
+  play_pattern_timed([nil,nil,:e5,:ds5,:d5,:b4,nil,:c5, nil,:e4,:f4,:g4,nil,:c4,:e4,:f4, nil,nil,:e5,:ds5,:d5,:b4,nil,:c5, nil], [0.25])
+  if(swap%2 == 0)
+    cue :two
+    swap += 1
+  else
+    cue :three
+    swap +=1
+  end
+  note = set :count, get[:count]+1
+  sleep 1.4
+end
+
+live_loop :b do
+  use_synth :tri
+  use_synth_defaults attack: 0, sustain: 0.1, decay: 0.1, release: 0.1, amp: 0.4
+  if (get[:count] &gt;= 9)
+    sync :master
+  end
+  sync :two
+  play_pattern_timed([nil,:f5,nil,:f5,:f5,nil,nil,nil], [0.25])
+  note = set :count, get[:count]+1
+  sleep 0.5
+end
+
+live_loop :c do
+  if (get[:count] == 20)
+    sync :master
+  end
+  use_synth :tri
+  use_synth_defaults attack: 0, sustain: 0.1, decay: 0.1, release: 0.1, amp: 0.4
+  sync :three
+  play_pattern_timed([nil,nil,:gs4,nil,nil,:f4,nil,nil, :e4,nil,nil,nil,nil,nil,nil,nil], [0.25])
+  note = set :count, get[:count]+1
+  sleep 0.5
+end
+
+live_loop :conductor do
+  while (get[:count] &lt; 9)
+    sleep 0.1
+  end
+  sleep 5
+  set :count, 0
+  cue :master
+  puts ""Let's go!""
+  sleep 0.1
+end
+
+
+","",Daniele Traversaro (traversarodaniele),2023-06-27 16:35:33 UTC,2023-06-27 16:35:33 UTC
+Task 7 - Gruppo 1,"play_pattern_timed([nil,nil,:e5,:ds5,:d5,:b4,nil,:c5,
+                    nil,:e4,:f4,:g4,nil,:c4,:e4,:f4,
+                    nil,nil,:e5,:ds5,:d5,:b4,nil,:c5,
+                    nil,:f5,nil,:f5,:f5,nil,nil,nil,
+                    nil,nil,:e5,:ds5,:d5,:b4,nil,:c5,
+                    nil,:e4,:f4,:g4,nil,:c4,:e4,:f4,
+                    nil,nil,:gs4,nil,nil,:f4,nil,nil,
+                    :e4,nil,nil,nil,nil,nil,nil,nil], [0.2])
+
+use_bpm 100
+
+# 1° thread/live loop
+in_thread do
+  sync :one
+  use_synth :pulse
+  use_synth_defaults release: 0.2, mod_rate: 5, amp: 0.6
+  play_pattern_timed([nil,nil,:e5,:ds5,:d5,:b4,nil,:c5, nil,:e4,:f4,:g4,nil,:c4,:e4,:f4,
+                      nil,nil,:e5,:ds5,:d5,:b4,nil,:c5, nil], [0.25])
+end
+# 2° thread/live loop
+in_thread do
+  sync :two
+  use_synth :tri
+  use_synth_defaults attack: 0, sustain: 0.1, decay: 0.1, release: 0.1, amp: 0.4
+  play_pattern_timed([nil,:f5,nil,:f5,:f5,nil,nil,nil], [0.25])
+end
+# 3° thread/live loop
+in_thread do
+  sync :three
+  use_synth :tri
+  use_synth_defaults attack: 0, sustain: 0.1, decay: 0.1, release: 0.1, amp: 0.4
+  play_pattern_timed([nil,nil,:gs4,nil,nil,:f4,nil,nil, :e4,nil,nil,nil,nil,nil,nil,nil], [0.25])
+end
+
+# 4° thread/live loop (“maestro d’orchestra”)
+# Do stuffs
+in_thread do
+  cue :one
+  cue :two
+  cue :one
+  sleep 0.2
+  cue :three
+end
+
+
+","",Anonimo,2023-03-29 10:57:39 UTC,2023-06-27 16:31:57 UTC
+Task 6 - Gruppo 1,"x = 50
+use_synth :beep
+define :f do |x|
+  define :g1 do |y|
+    x = y + 4
+    play x
+  end
+  play x
+  sleep 2
+  g1 x
+end
+define :g do |n|
+  n = n + 8
+  play n
+end
+define :h do
+  x = x + 12
+  play x
+end
+define :j do |x|
+  x = x + 44
+end
+define :p do |x|
+  use_synth :chipbass
+end
+define :q do |x|
+  x = x + 44
+end
+
+define :z do
+  x = x + 4
+  play x
+end
+in_thread do
+  2.times do
+    play x
+    sleep 2
+    x = x + 4
+  end
+  
+  f x
+  sleep 2
+  g x
+  sleep 2
+  h
+  sleep 2
+  j x
+  
+  cue :tick
+  sync :tick3
+  play x + 4
+end
+in_thread do
+  sync :tick
+  2.times do
+    use_synth :dark_ambience
+    x = x + 4
+    play x
+    sleep 2
+  end
+  cue :tick2
+end
+in_thread do
+  sync :tick2
+  p x
+  q x
+  z
+  print x
+  sleep 2
+  cue :tick3
+end
+","",Anonimo,2023-03-29 10:37:11 UTC,2023-05-24 10:05:58 UTC
+Task 6 gruppo 9,"x = 50
+use_synth :beep
+define :f do |x|
+  define :g1 do |y|
+    x = y + 4
+    play x
+  end
+  play x
+  sleep 2
+  g1 x
+end
+define :g do |n|
+  n = n + 8
+  play n
+end
+define :h do
+  x = x + 12
+  play x
+end
+define :j do |x|
+  x = x + 0 # non fa niente!!!
+end
+define :p do |x|
+  use_synth :chipbass # forse cambia il synth
+end
+define :q do |x|
+  x = x + 4
+end
+
+define :z do
+  x = x + 4
+  play x
+end
+in_thread do
+  2.times do
+    play x
+    sleep 2
+    x = x + 4
+  end
+  
+  f x
+  sleep 2
+  g x
+  sleep 2
+  h
+  sleep 2
+  j x
+  
+  cue :tick
+  sync :tick3
+  play 86
+end
+in_thread do
+  sync :tick
+  2.times do
+    use_synth :dark_ambience
+    x = x + 4
+    play x
+    sleep 2
+  end
+  cue :tick2
+end
+in_thread do
+  sync :tick2
+  p x
+  q x
+  z
+  print x
+  sleep 2
+  cue :tick3
+end
+","",Anonimo,2023-03-29 10:39:37 UTC,2023-03-29 10:39:37 UTC
+Gruppo7 - es B,"set :a, (ring 60, 57, 65)
+
+in_thread do
+  10.times do
+    set :a, get[:a].shuffle
+    sleep 1
+  end
+end
+","",Anonimo,2023-03-23 11:55:54 UTC,2023-03-29 09:10:40 UTC
+Gruppo 11,"a = (ring 60, 57, 65)
+set :foo , a
+in_thread do
+  10.times do
+    aux = get[:foo]
+    set :foo , aux.sort
+    print get[:foo]
+    sleep 1
+    play get[:foo]
+  end
+end
+
+in_thread do
+  10.times do
+    aux = get[:foo]
+    set :foo , aux.shuffle
+    sleep 1
+  end
+end
+
+
+","",Anonimo,2023-03-23 11:52:04 UTC,2023-03-23 11:53:03 UTC
+Gruppo 1 - Risposta 4,"a = (ring 60, 57, 65)
+in_thread do
+  10.times do
+    set :a, a.sort
+    print a
+    sleep 1
+    play a
+  end
+end
+
+in_thread do
+  10.times do
+    sync :a, a.shuffle
+    sleep 1
+  end
+end
+","",Anonimo,2023-03-23 11:52:46 UTC,2023-03-23 11:52:46 UTC
+Gruppo7 - es A,"set :a, (ring 60, 57, 65)
+in_thread do
+  10.times do
+    get[:a].sort
+    print get[:a]
+    sleep 1
+    play get[:a]
+  end
+end
+","",Anonimo,2023-03-23 11:49:57 UTC,2023-03-23 11:49:57 UTC
+Risposta domanda 4 gruppo 9,"a = (ring 60, 57, 65)
+in_thread do
+  10.times do
+    b=get[:asaah]
+    ciao = b.sort
+    print ciao
+    sleep 1
+    play ciao
+  end
+end
+
+in_thread do
+  10.times do
+    b= a.shuffle
+    set :asaah, b
+    sleep 1
+  end
+end
+","",Anonimo,2023-03-23 11:50:57 UTC,2023-03-23 11:50:57 UTC
+Gruppo 7,"Vengono creati i thread e vengono eseguiti parallelamente in modo non deterministico. 
+
+
+","",Anonimo,2023-03-23 11:35:48 UTC,2023-03-23 11:35:48 UTC
+Risposta,"Lo script presenta race conditions perchè i 3 thread che vengono creati dalla funzione foo sono in modo concorrente e non deterministico, quindi le note suonate (ovvero le prime 3 di L), sono in un ordine diverso ad ogni esecuzione. 
+","",Anonimo,2023-03-23 11:35:05 UTC,2023-03-23 11:38:23 UTC
+Gruppo 10 risposta SonicPi - 3,"Nella funzione foo viene creato un thread che suona la nota i-esima della lista note, dato che foo viene chiamato 3 volte, i 3 thread creati suoneranno ognuno una nota diversa tra le prime tre della lista, queste sovrapposte andranno quindi sempre a suonare l'accordo di Mi minore [52,55,59]
+","",Anonimo,2023-03-23 11:35:18 UTC,2023-05-16 09:16:45 UTC
+Risposta SonicPi - 3 (Gruppo 1),"Il programma definisce 3 thread, incrementando il valore di i corrispondente al valore della nota che il thread sintetizza. Il risultato corrisponde all'accordo Mi minore formato da Mi, Sol, Si rispettivamente 52,55,59. Il 40 non viene suonato perchè non viene chiamato (né creato) il thread corrispondente.
+","",Anonimo,2023-03-23 11:34:05 UTC,2023-03-23 11:35:07 UTC
+Risposta (Gruppo 9),"La funzione foo crea un thread dove viene suonata una nota.
+foo viene chiamata 3 volte con tre argomenti diversi (che rappresentano la nota).
+Le tre note insieme rappresentano l'accordo di mi Minore
+","",Anonimo,2023-03-23 11:35:50 UTC,2023-05-24 09:58:20 UTC

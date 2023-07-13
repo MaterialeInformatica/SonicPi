@@ -58,7 +58,7 @@ live_loop :conductor do
 end
 
 
-","",Daniele Traversaro (traversarodaniele),2023-06-27 16:35:33 UTC,2023-06-27 16:35:33 UTC
+","",D,2023-06-27 16:35:33 UTC,2023-06-27 16:35:33 UTC
 Task 7 - Gruppo 1,"play_pattern_timed([nil,nil,:e5,:ds5,:d5,:b4,nil,:c5,
                     nil,:e4,:f4,:g4,nil,:c4,:e4,:f4,
                     nil,nil,:e5,:ds5,:d5,:b4,nil,:c5,
